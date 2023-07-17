@@ -27,7 +27,7 @@ my_path=os.path.abspath(file_name)
 relhum_MH= data_MH['relhum'][:] #[time, plevel, lon, lat]
 relhum_PI= data_PI['relhum'][:]
 
-minlev= 100000
+minlev= 100000                                          # Selecting the minimum and maximum vertical levels to be selected.
 maxlev= 20000
 
 relhum_MH= relhum_MH.sel(plev= slice(minlev, maxlev))
