@@ -38,15 +38,15 @@ l_prec_PI= data_aprl_PI['aprl'][:]*60*60*24*30
 c_prec_MH= data_aprc_MH['aprc'][:]*60*60*24*30
 l_prec_MH= data_aprl_MH['aprl'][:]*60*60*24*30
 
-# Separating seasons PI:
+# Separating seasons (Austral Summer and winter) PI:
 
-c_prec_PI_JJA= c_prec_PI[5:8]
+c_prec_PI_JJA= c_prec_PI[5:8]                        # Take out the data for the months June, July, August (Austral winter)
 c_prec_PI_JJA_mean= c_prec_PI_JJA.mean(dim='time')
 
 l_prec_PI_JJA= l_prec_PI[5:8]
 l_prec_PI_JJA_mean= l_prec_PI_JJA.mean(dim='time')
 
-c_prec_PI_DJF= xr.concat([c_prec_PI[11],c_prec_PI[0],c_prec_PI[1]], dim='time')
+c_prec_PI_DJF= xr.concat([c_prec_PI[11],c_prec_PI[0],c_prec_PI[1]], dim='time') # Take out the data for December, Jan, and Feb and then concatenate them
 c_prec_PI_DJF_mean= c_prec_PI_DJF.mean(dim='time')
 
 l_prec_PI_DJF= xr.concat([l_prec_PI[11],l_prec_PI[0],l_prec_PI[1]], dim='time')
@@ -58,7 +58,7 @@ prec_PI_JJA_mean= c_prec_PI_JJA_mean + l_prec_PI_JJA_mean
 prec_PI_DJF= l_prec_PI_DJF + c_prec_PI_DJF
 prec_PI_DJF_mean= l_prec_PI_DJF_mean + c_prec_PI_DJF_mean
 
-# Separating seasons MH:
+# Separating seasons (Austral summer and winter) MH:
 
 c_prec_MH_JJA= c_prec_MH[5:8]
 c_prec_MH_JJA_mean= c_prec_MH_JJA.mean(dim='time')
@@ -90,7 +90,7 @@ diff_DJF= prec_MH_DJF_mean - prec_PI_DJF_mean
 
 statistics_JJA, p_value_JJA= stats.ranksums(prec_PI_JJA,prec_MH_JJA) 
 
-limit= 0.05
+limit= 0.05                            # Setting the threshold value
 mask= p_value_JJA < limit
 pvalue_new_JJA= np.where(mask,p_value_JJA, np.nan)
 
@@ -105,8 +105,6 @@ pvalue_new_DJF= np.where(mask,p_value_DJF, np.nan)
 
 fig, (ax1,ax2)= plt.subplots(1,2,figsize=(14,7),  subplot_kw={'projection':ccrs.PlateCarree()}) 
 extent = [-80, -50, 0, -34 ]
-
-level1=np.linspace(0,800,40)
 
 lons= c_prec_MH['lon'][:]
 lats= c_prec_MH['lat'][:]
@@ -149,8 +147,6 @@ gl2.right_labels = False
 gl2.xlabel_style = {'size': 25}
 gl2.ylabel_style = {'size': 25}
 
-# plt.colorbar(plot1, shrink=1, orientation='vertical', label= 'Precipitation [mm/month]')
-#cax = plt.axes([0.90, 0.11, 0.025, 0.775])
 cbar1=fig.colorbar(plot2, shrink=1, ax=ax2, extend='both') #, format='%.0f'
 cbar1.set_label(label='Precipitation [mm/month]', size= 25) # To change the size of the label [add weight='bold' for bold italice whatever]
 cbar1.ax.tick_params(labelsize=22)  # Can be used to change the size of the values in the colorbar
@@ -173,13 +169,13 @@ ax3.set_extent(extent)
 ax4.set_extent(extent)
 
 plot3=ax3.pcolormesh(X,Y, diff_JJA, cmap='BrBG', transform=ccrs.PlateCarree(), vmin=-80, vmax=70)
-# ax3.scatter(X,Y, pvalue_new_JJA**0.5,facecolors='black', edgecolor='black', transform=ccrs.PlateCarree())
+ax3.scatter(X,Y, pvalue_new_JJA**0.5,facecolors='black', edgecolor='black', transform=ccrs.PlateCarree())
 ax3.plot(-75.180, -14.5, marker= '.' , color= 'black', markersize= 15, transform= ccrs.PlateCarree())
 ax3.text(-75, -14, 'Palpa', fontsize= 20, transform=ccrs.PlateCarree())
 ax3.plot(-69.3354, -15.9254, marker= '.' , color= 'black', markersize= 15, transform= ccrs.PlateCarree())
 ax3.text(-69, -15, 'Titicaca', fontsize= 20, transform=ccrs.PlateCarree())
 plot4=ax4.pcolormesh(X,Y, diff_DJF, cmap='BrBG', transform=ccrs.PlateCarree(), vmin=-80, vmax=70)
-# ax4.scatter(X,Y, pvalue_new_DJF**0.5,facecolors='black', edgecolor='black', transform=ccrs.PlateCarree())
+ax4.scatter(X,Y, pvalue_new_DJF**0.5,facecolors='black', edgecolor='black', transform=ccrs.PlateCarree())
 ax4.plot(-75.180, -14.5, marker= '.' , color= 'black', markersize= 15, transform= ccrs.PlateCarree())
 ax4.text(-75, -14, 'Palpa', fontsize= 20, transform=ccrs.PlateCarree())
 ax4.plot(-69.3354, -15.9254, marker= '.' , color= 'black', markersize= 15, transform= ccrs.PlateCarree())
