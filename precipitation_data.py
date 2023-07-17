@@ -203,3 +203,7 @@ cbar2.ax.tick_params(labelsize=22)  # Can be used to change the size of the valu
 plt.savefig(my_path + "AsEGUprec_ano_MH-PI_ranksums_withoutstat.svg", dpi=300)
 plt.subplots_adjust(left=0.05, right=0.88, hspace=0.1)
 plt.show()
+
+
+
+
