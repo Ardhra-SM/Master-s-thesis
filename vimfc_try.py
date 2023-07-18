@@ -190,36 +190,7 @@ vimfc_MH_DJF= np.mean(vimfc_MH_DJF_stats, axis=0)
 vimfc_MH_PI_JJA= vimfc_MH_JJA - vimfc_PI_JJA
 vimfc_MH_PI_DJF= vimfc_MH_DJF - vimfc_PI_DJF
 
-
-# # Statistic tests:
-
-# # Welch's test : Very few significant values 
-# # Ranksums test: Also gives a few significant values
-# # Wilcoxon test: 
-
-# # p-values for JJA:
-
-# data_1_JJA=  vimfc_PI_JJA_stats
-# data_2_JJA=  vimfc_MH_JJA_stats
-
-# statistics_JJA, pvalue_JJA= stats.ranksums(data_1_JJA,data_2_JJA)
-
-# limit= 0.05
-# mask= pvalue_JJA < limit
-# pvalue_new_JJA = np.where(mask,pvalue_JJA, np.nan)
-
-# # p-values for DJF:
-
-# data_1_DJF=  vimfc_PI_DJF_stats
-# data_2_DJF=  vimfc_MH_DJF_stats
-
-# statistics_DJF, pvalue_DJF= stats.ranksums(data_1_DJF,data_2_DJF)
-
-# limit= 0.05
-# mask= pvalue_DJF < limit
-# pvalue_new_DJF = np.where(mask,pvalue_DJF, np.nan)
-
-# # Plotting:
+# Plotting:
 
 fig, (ax1,ax2)= plt.subplots(1,2,figsize=(14,7),  subplot_kw={'projection':ccrs.PlateCarree()}) 
 extent = [-80, -50, 0, -34 ]
@@ -264,13 +235,11 @@ gl2.right_labels = False
 gl2.xlabel_style = {'size': 25}
 gl2.ylabel_style = {'size': 25}
 
-# plt.colorbar(plot1, shrink=1, orientation='vertical', label= 'Precipitation [mm/month]')
-#cax = plt.axes([0.90, 0.11, 0.025, 0.775])
 cbar1=fig.colorbar(plot2, shrink=1, ax=ax2, extend='both') #, format='%.0f'
-cbar1.set_label(label='VIMF [kg/ms]', size= 25) # To change the size of the label [add weight='bold' for bold italice whatever]
+cbar1.set_label(label='VIMF [kg/ms]', size= 25) # To change the size of the label [add weight='bold' for bold]
 cbar1.ax.tick_params(labelsize=22)  # Can be used to change the size of the values in the colorbar
 
-# plt.savefig(my_path + "AsEGUvimfc_ano_PI_ranksums_0.1thresh.svg", dpi=300)
+plt.savefig(my_path + "AsEGUvimfc_ano_PI_ranksums_0.1thresh.svg", dpi=300)
 
 fig, (ax3,ax4)= plt.subplots(1,2, figsize=(14,7), subplot_kw={'projection':ccrs.PlateCarree()})
 extent = [-80, -50, 0, -34 ]
@@ -313,9 +282,9 @@ gl4.xlabel_style = {'size': 25}
 gl4.ylabel_style = {'size': 25}
 
 cbar2=fig.colorbar(plot4, shrink=1, ax=ax4, extend='both')
-cbar2.set_label(label='VIMF [kg/ms]', size= 25) # To change the size of the label [add weight='bold' for bold italice whatever]
+cbar2.set_label(label='VIMF [kg/ms]', size= 25) # To change the size of the label [add weight='bold' for bold]
 cbar2.ax.tick_params(labelsize=22)  # Can be used to change the size of the values in the colorbar
 
-# plt.savefig(my_path + "AsEGUvimfc_ano_MH-PI_ranksums_200623_quiver.svg", dpi=300)
+plt.savefig(my_path + "AsEGUvimfc_ano_MH-PI_ranksums_200623_quiver.svg", dpi=300)
 plt.subplots_adjust(left=0.05, right=0.88, hspace=0.1)
 plt.show()
