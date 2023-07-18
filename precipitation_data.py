@@ -27,7 +27,7 @@ data_aprc_PI= xr.open_dataset(file_aprc_PI)
 file_name="//134.2.5.43/esd01/data/asmadhavan/scratch/Main_images/fig_"
 my_path=os.path.abspath(file_name)
 
-# Extracting variables PI:
+# Extracting variables for PI:
 
 c_prec_PI= data_aprc_PI['aprc'][:]*60*60*24*30 # Converting to mm/month
 l_prec_PI= data_aprl_PI['aprl'][:]*60*60*24*30
@@ -46,19 +46,19 @@ c_prec_PI_JJA_mean= c_prec_PI_JJA.mean(dim='time')
 l_prec_PI_JJA= l_prec_PI[5:8]
 l_prec_PI_JJA_mean= l_prec_PI_JJA.mean(dim='time')
 
-c_prec_PI_DJF= xr.concat([c_prec_PI[11],c_prec_PI[0],c_prec_PI[1]], dim='time') # Take out the data for December, Jan, and Feb and then concatenate them
+c_prec_PI_DJF= xr.concat([c_prec_PI[11],c_prec_PI[0],c_prec_PI[1]], dim='time') # Take out the data for December, Jan, and Feb and then concatenate them (Austral summer)
 c_prec_PI_DJF_mean= c_prec_PI_DJF.mean(dim='time')
 
 l_prec_PI_DJF= xr.concat([l_prec_PI[11],l_prec_PI[0],l_prec_PI[1]], dim='time')
 l_prec_PI_DJF_mean= l_prec_PI_DJF.mean(dim='time')
 
 prec_PI_JJA= c_prec_PI_JJA + l_prec_PI_JJA
-prec_PI_JJA_mean= c_prec_PI_JJA_mean + l_prec_PI_JJA_mean
+prec_PI_JJA_mean= c_prec_PI_JJA_mean + l_prec_PI_JJA_mean   # Total precipitation is the sum of large-scale and convective precipitation
 
 prec_PI_DJF= l_prec_PI_DJF + c_prec_PI_DJF
 prec_PI_DJF_mean= l_prec_PI_DJF_mean + c_prec_PI_DJF_mean
 
-# Separating seasons (Austral summer and winter) MH:
+# Separating seasons (Austral summer and winter) for MH:
 
 c_prec_MH_JJA= c_prec_MH[5:8]
 c_prec_MH_JJA_mean= c_prec_MH_JJA.mean(dim='time')
@@ -86,7 +86,7 @@ diff_DJF= prec_MH_DJF_mean - prec_PI_DJF_mean
 # Welch       : Gives a few significant values. I guess it gives more significant values for DJF.
 # Ranksum test: Gives a few significant values
 
-# p-values for JJA:
+# Rank-sums p-values for JJA:
 
 statistics_JJA, p_value_JJA= stats.ranksums(prec_PI_JJA,prec_MH_JJA) 
 
@@ -94,12 +94,28 @@ limit= 0.05                            # Setting the threshold value
 mask= p_value_JJA < limit
 pvalue_new_JJA= np.where(mask,p_value_JJA, np.nan)
 
-# p-values for DJF:
+# Welch's p-values for JJA:
+
+statistics_JJA, p_value_JJA= stats.ttest_ind(prec_PI_JJA,prec_MH_JJA, equal_var=False) 
+
+limit= 0.05                            # Setting the threshold value
+mask= p_value_JJA < limit
+pvalue_new_JJA= np.where(mask,p_value_JJA, np.nan)
+
+# Rank-sums p-values for DJF:
 
 statistics_DJF, p_value_DJF= stats.ranksums(prec_PI_DJF,prec_MH_DJF) 
 limit= 0.05
 mask= p_value_DJF < limit
 pvalue_new_DJF= np.where(mask,p_value_DJF, np.nan)
+
+# Welch's p-values for DJF:
+
+statistics_DJF, p_value_DJF= stats.ttest_ind(prec_PI_DJF,prec_MH_DJF, equal_var=False) 
+limit= 0.05
+mask= p_value_DJF < limit
+pvalue_new_DJF= np.where(mask,p_value_DJF, np.nan)
+
 
 # Plotting:
 
@@ -148,7 +164,7 @@ gl2.xlabel_style = {'size': 25}
 gl2.ylabel_style = {'size': 25}
 
 cbar1=fig.colorbar(plot2, shrink=1, ax=ax2, extend='both') #, format='%.0f'
-cbar1.set_label(label='Precipitation [mm/month]', size= 25) # To change the size of the label [add weight='bold' for bold italice whatever]
+cbar1.set_label(label='Precipitation [mm/month]', size= 25) # To change the size of the label [add weight='bold' for bold]
 cbar1.ax.tick_params(labelsize=22)  # Can be used to change the size of the values in the colorbar
 
 plt.savefig(my_path + "AsEGUprec_ano_PI.svg", dpi=300)
@@ -197,7 +213,7 @@ gl4.ylabel_style = {'size': 25}
 
 
 cbar2=fig.colorbar(plot4, shrink=1, ax=ax4, extend='both')
-cbar2.set_label(label='Precipitation anomalies [mm/month]', size= 25) # To change the size of the label [add weight='bold' for bold italice whatever]
+cbar2.set_label(label='Precipitation anomalies [mm/month]', size= 25) # To change the size of the label [add weight='bold']
 cbar2.ax.tick_params(labelsize=22)  # Can be used to change the size of the values in the colorbar
 
 plt.savefig(my_path + "AsEGUprec_ano_MH-PI_ranksums_withoutstat.svg", dpi=300)
