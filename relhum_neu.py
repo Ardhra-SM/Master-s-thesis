@@ -30,7 +30,7 @@ relhum_PI= data_PI['relhum'][:]
 minlev= 100000                                          # Selecting the minimum and maximum vertical levels to be selected.
 maxlev= 20000
 
-relhum_MH= relhum_MH.sel(plev= slice(minlev, maxlev))
+relhum_MH= relhum_MH.sel(plev= slice(minlev, maxlev))   # Slicing the data within the min and max vertical levels
 relhum_PI= relhum_PI.sel(plev= slice(minlev, maxlev))
 
 relhum_MH= relhum_MH.mean(dim='plev')                   # Averaging along the different pressure levels to find mean value.
@@ -40,9 +40,9 @@ lons= relhum_PI['lon'][:]
 lats= relhum_PI['lat'][:]
 
 # MH season separation:
-relhum_MH_DJF= xr.concat([relhum_MH[11], relhum_MH[0], relhum_MH[1]], dim='time')
+relhum_MH_DJF= xr.concat([relhum_MH[11], relhum_MH[0], relhum_MH[1]], dim='time')                             # Austral summer
 relhum_MH_DJF_plot= xr.concat([relhum_MH[11], relhum_MH[0], relhum_MH[1]], dim='time').mean(dim='time')
-relhum_MH_JJA= relhum_MH[5:8]
+relhum_MH_JJA= relhum_MH[5:8]                                                                                 # Austral winter
 relhum_MH_JJA_plot= relhum_MH[5:8].mean(dim='time')
 
 # PI season separation:
@@ -52,12 +52,12 @@ relhum_PI_DJF_plot= xr.concat([relhum_PI[11], relhum_PI[0], relhum_PI[1]], dim='
 relhum_PI_JJA= relhum_PI[5:8]
 relhum_PI_JJA_plot= relhum_PI[5:8].mean(dim='time')
 
-# Differences:
+# Differences (MH-PI):
 
 relhum_MH_PI_DJF= relhum_MH_DJF_plot - relhum_PI_DJF_plot
 relhum_MH_PI_JJA= relhum_MH_JJA_plot - relhum_PI_JJA_plot
 
-# Statistical analysis JJA:
+# Rank-sums Statistical analysis JJA:
 
 data_1_JJA= relhum_PI_JJA
 data_2_JJA= relhum_MH_JJA
@@ -66,7 +66,13 @@ limit=0.05
 mask= p_values_JJA < limit
 pvalue_new_JJA = np.where(mask,p_values_JJA, np.nan)
 
-# Statistical analysis DJF:
+# Welch's statistical analysis JJA:
+statistic_JJA, p_values_JJA = stats.ttest_ind(data_1_JJA, data_2_JJA, equal_var=False)
+limit=0.05
+mask= p_values_JJA < limit
+pvalue_new_JJA = np.where(mask,p_values_JJA, np.nan)
+
+# Rank-sums statistical analysis DJF:
 
 data_1_DJF= relhum_PI_DJF
 data_2_DJF= relhum_MH_DJF
@@ -75,8 +81,11 @@ limit=0.05
 mask= p_values_DJF < limit
 pvalue_new_DJF= np.where(mask, p_values_DJF, np.nan)
 
-print(f"pvalue:{pvalue_new_DJF}")
-
+# Welchs's statistical analysis DJF: 
+statistic_DJF, p_values_DJF= stats.ttest_ind(data_1_DJF, data_2_DJF, equal_var=False)
+limit=0.05
+mask= p_values_DJF < limit
+pvalue_new_DJF= np.where(mask, p_values_DJF, np.nan)
 
 # Plotting:
 
@@ -121,13 +130,11 @@ gl2.right_labels = False
 gl2.xlabel_style = {'size': 25}
 gl2.ylabel_style = {'size': 25}
 
-# plt.colorbar(plot1, shrink=1, orientation='vertical', label= 'Precipitation [mm/month]')
-#cax = plt.axes([0.90, 0.11, 0.025, 0.775])
 cbar1=fig.colorbar(plot2, shrink=1, ax=ax2, extend='neither')  #, format='%.0f'
-cbar1.set_label(label='Relative humidity', size= 25) # To change the size of the label [add weight='bold' for bold italice whatever]
+cbar1.set_label(label='Relative humidity', size= 25) # To change the size of the label [add weight='bold']
 cbar1.ax.tick_params(labelsize=22)  # Can be used to change the size of the values in the colorbar
 
-# plt.savefig(my_path + "AsEGU_relhum_ranksums.svg", dpi=300)
+plt.savefig(my_path + "AsEGU_relhum_ranksums.svg", dpi=300)
 
 fig, (ax3,ax4)= plt.subplots(1,2, figsize=(14,7), subplot_kw={'projection':ccrs.PlateCarree()})
 extent = [-80, -50, 0, -34 ]
@@ -173,11 +180,11 @@ gl4.xlabel_style = {'size': 25}
 gl4.ylabel_style = {'size': 25}
 
 cbar2=fig.colorbar(plot4, shrink=1, ax=ax4, extend='both') # , format='%.0f'
-cbar2.set_label(label='Relative humidity', size= 25) # To change the size of the label [add weight='bold' for bold italice whatever]
+cbar2.set_label(label='Relative humidity', size= 25) # To change the size of the label [add weight='bold' for bold]
 cbar2.ax.tick_params(labelsize=22)  # Can be used to change the size of the values in the colorbar
-# cbar2.set_ticks(np.arange(vmin, vmax+1, (vmax-vmin)/9).astype(np.int64))
 
-# plt.savefig(my_path + "AsEGU_MH-PI_relhum_ranksums.svg", dpi=300)
+
+plt.savefig(my_path + "AsEGU_MH-PI_relhum_ranksums.svg", dpi=300)
 plt.subplots_adjust(left=0.05, right=0.88, hspace=0.1)
 plt.show()
 
