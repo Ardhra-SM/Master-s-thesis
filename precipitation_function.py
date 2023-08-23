@@ -40,6 +40,10 @@ def total_prec(convective, large):
     total= convective + large
     print("----------Total precipitation has been calculated----------")
     return total
+-----------------------------------------------------------------------------------------------------------------------------
+def vertical_select(data, min, max):
+    vertical= data.sel(plev= slice(min, max))
+    return vertical
 -------------------------------------------------------------------------------------------------------------------------------
 # Extracts the longitude values from the data
 def longitude(filename):
