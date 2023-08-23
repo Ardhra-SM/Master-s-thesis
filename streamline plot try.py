@@ -188,47 +188,6 @@ cbar2.ax.tick_params(labelsize=22)  # Can be used to change the size of the valu
 plt.savefig(my_path + "geopot_streamline_MH.svg", dpi=300)
 plt.subplots_adjust(left=0.05, right=0.88, hspace=0.1)
 plt.show()
-------------------------------------------------------------------------------------------------------------------------------
-# Creates a two_subplot image with quiver on top
-def two_fig_quiver(varname1, varname2, u_vector, v_vector, u_vector_1, v_vector_1, lons, lats, extent):
-    fig, (ax1,ax2)= plt.subplots(1,2,figsize=(14,7),  subplot_kw={'projection':ccrs.PlateCarree()}) 
-    extent = [-80, -50, 0, -34 ]
-
-    X=lons
-    Y=lats
-    X,Y=np.meshgrid(X,Y)
-
-    ax1.add_feature(cfeature.LAND)
-    ax1.add_feature(cfeature.COASTLINE, color='k')
-    ax2.add_feature(cfeature.LAND)
-    ax2.add_feature(cfeature.COASTLINE, color='k')
-    ax1.set_extent(extent)
-    ax2.set_extent(extent)
-    ax1.set_title('PI (JJA)', loc='left', fontsize=25)
-    ax2.set_title('PI (DJF)', loc='left', fontsize=25)
-
-    plot1=ax1.pcolormesh(X,Y, varname1, cmap='RdBu', transform=ccrs.PlateCarree())
-    ax1.quiver(X[::2],Y[::2], u_vector[::2], v_vector[::2], transform= ccrs.PlateCarree() , color='white', scale=350)
-    plot2=ax2.pcolormesh(X,Y, varname2, cmap='RdBu', transform=ccrs.PlateCarree())
-    ax2.quiver(X[::2],Y[::2], u_vector_1[::2], v_vector_1[::2], transform= ccrs.PlateCarree() , color='white' , scale=100)
-    fig.tight_layout(pad=5.0)
-
-    gl= ax1.gridlines(draw_labels=True)
-    gl.top_labels = False
-    gl.right_labels = False
-    gl.xlabel_style = {'size': 25}
-    gl.ylabel_style = {'size': 25}
-
-
-    gl2= ax2.gridlines(draw_labels=True)
-    gl2.top_labels = False
-    gl2.right_labels = False
-    gl2.xlabel_style = {'size': 25}
-    gl2.ylabel_style = {'size': 25}
-
-    cbar1=fig.colorbar(plot2, shrink=1, ax=ax2, extend='both') #, format='%.0f'
-    cbar1.set_label(label='Geopotential height [m]', size= 25) # To change the size of the label [add weight='bold' for bold]
-    cbar1.ax.tick_params(labelsize=22)  # Can be used to change the size of the values in the colorbar
 
 
 
