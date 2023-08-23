@@ -10,40 +10,47 @@ def prec_mm_month(prec):
     mm_month= prec*60*60*24*30
     print("----------Precipitation has been converted to mm/month----------")
     return mm_month
+--------------------------------------------------------------------------------------------------------------------------
 # Extracts the "convective precipitation" variable from the netCDF file
 def convective_precipitation(file_name):
     c_prec= file_name['aprc'][:]
     print("----------convective precipitation has been extracted----------")
     return c_prec
+--------------------------------------------------------------------------------------------------------------------------------
 # Extracts the "large scale precipitation" variable from the netCDF file 
 def largescale_precipitation(file_name):
     l_prec= file_name['aprl'][:]
     print("----------large scale precipitation has been extracted----------")
     return l_prec
+--------------------------------------------------------------------------------------------------------------------------------
 # Extracts only the austral summer months
 def summer_south(data):
     sum_south= xr.concat([data[11], data[0], data[1]], dim='time')
     print("----------Summer south data created----------")
     return sum_south
+-----------------------------------------------------------------------------------------------------------------------------
 # Extracts only the austral winter months
 def winter_south(data):
     win_south= data[5:8]
     print("----------Winter south data created----------")
     return win_south
+-------------------------------------------------------------------------------------------------------------------------------
 # Extracts the total precipitation from convective and large-scale precipitation
 def total_prec(convective, large):
     total= convective + large
     print("----------Total precipitation has been calculated----------")
     return total
+-------------------------------------------------------------------------------------------------------------------------------
 # Extracts the longitude values from the data
 def longitude(filename):
     lon= filename['lon'][:]
     return lon
-# Extracts teh latitude values from the data
+------------------------------------------------------------------------------------------------------------    
+# Extracts the latitude values from the data
 def latitude(filename):
     lat= filename['lat'][:]
     return lat
-    
+--------------------------------------------------------------------------------------------------------------
 # Plots a 2 subplot figure when provided with var1, var2, lon, lat, and the extent
 def two_fig(varname1, varname2, lons, lats, extent):
     fig, (ax1,ax2)= plt.subplots(1,2,figsize=(14,7),  subplot_kw={'projection':ccrs.PlateCarree()}) 
@@ -82,7 +89,8 @@ def two_fig(varname1, varname2, lons, lats, extent):
     cbar1.set_label(label='Precipitation [mm/month]', size= 25) # To change the size of the label [add weight='bold' for bold]
     cbar1.ax.tick_params(labelsize=22)  # Can be used to change the size of the values in the colorbar
     plt.show()
-# Creates a 4 subplot figure
+-----------------------------------------------------------------------------------------------------------------------------
+# Creates a 4 subplot figure when provided with the four variable names, lons, lats, and extent.
 def four_fig(varname1, varname2, varname3, varname4, lons, lats, extent):
     fig, axes= plt.subplots(nrows=2, ncols=2, figsize=(25,20), subplot_kw={'projection':ccrs.PlateCarree()})
     extent = [-80, -50, 0, -35 ]
